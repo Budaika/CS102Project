@@ -18,7 +18,6 @@ public class Reader implements DataAnalytics {
     private ArrayList<City> savedData;
 
     public Reader() {
-
     }
 
     public void read() {
@@ -53,7 +52,6 @@ public class Reader implements DataAnalytics {
         double madinah = 0;
         double jeddah = 0;
         double abha = 0;
-        read();
         HashMap<String, Double> hottest = new HashMap<>();
         for (City city : savedData) {
             if (city.getDate().after(d1) && city.getDate().before(d2)) {
@@ -102,8 +100,6 @@ public class Reader implements DataAnalytics {
         double humidity = 0;
         double pressure = 0;
         double distance = 0;
-
-        read();
         for (City cityStored : savedData) {
             if (cityStored.getCityName().equalsIgnoreCase(city.getCityName())
                     && city.getDate().after(d1) && city.getDate().before(d2)) {
@@ -141,8 +137,6 @@ public class Reader implements DataAnalytics {
         double madina = 0;
         double jeddah = 0;
         double abha = 0;
-        read();
-
         for (City city : savedData) {
             if (city.getDate().after(d1) && city.getDate().before(d2)) {
                 if (city.getCityName().equalsIgnoreCase("riyadh")) {
@@ -168,20 +162,17 @@ public class Reader implements DataAnalytics {
         citiesByTemp.add(new City("Madina", new TemperatureSensor(madina / madinaCount)));
         citiesByTemp.add(new City("Jeddah", new TemperatureSensor(jeddah / jeddahCount)));
         citiesByTemp.add(new City("Abha", new TemperatureSensor(abha / abhaCount)));
-;
         return citiesByTemp;
 
     }
 
     @Override
     public HashMap alert(City city, Date d1, Date d2) {
-
         HashMap<String, Integer> cityAlerts = new HashMap<>();
         int distanceAlert = 0;
         int temperatureAlert = 0;
         int pressureAlert = 0;
         int humidityAlert = 0;
-
         for (City cityStored : savedData) {
             if (city.getCityName().equalsIgnoreCase(cityStored.getCityName())) {
                 if (city.getDate().after(d1) && city.getDate().before(d2)) {
@@ -205,7 +196,6 @@ public class Reader implements DataAnalytics {
         cityAlerts.put("Pressure Alert", pressureAlert);
         cityAlerts.put("Humidity Alert", humidityAlert);
         return cityAlerts;
-
     }
 
 }

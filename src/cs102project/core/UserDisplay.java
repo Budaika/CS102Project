@@ -63,8 +63,9 @@ public class UserDisplay implements UserDisplayInterface {
 
     @Override
     public void displayHottestTemperature() {
-        System.out.println("\nPlease enter the two dates to search for the hottest\n"
-                + "temperature of each city within the two dates, example input:\n4 2 2018.");
+        reader.read();
+        System.out.println("Please enter the two dates to search for the hottest\n"
+                + "temperature of each city within the two dates: ");
         int day1 = input.nextInt();
         int month1 = input.nextInt();
         int year1 = input.nextInt();
@@ -96,8 +97,9 @@ public class UserDisplay implements UserDisplayInterface {
 
     @Override
     public void displayAverageMeasurements() {
-        System.out.println("\nPlease enter the city and two dates to get the average\n"
-                + "of each of that city's attributes within the two dates.\n ");
+        reader.read();
+        System.out.println("Please enter the city and two dates to get the average\n"
+                + "of each of that city's attributes within the two dates. ");
         System.out.print("Enter the name of the city: ");
         String city = input.next();
         System.out.print("\n\nNow enter the first date: ");
@@ -112,7 +114,8 @@ public class UserDisplay implements UserDisplayInterface {
         Date d2 = new Date(day2, month2, year2);
 
         if (city.equalsIgnoreCase("riyadh") || city.equalsIgnoreCase("makkah")
-                || city.equalsIgnoreCase("madinah") || city.equalsIgnoreCase("abha")) {
+                || city.equalsIgnoreCase("madinah") || city.equalsIgnoreCase("jeddah")
+                ||city.equalsIgnoreCase("abha")) {
             System.out.println("City name: " + city);
             System.out.println("Average Temperature: " + reader.averageMeasurements(new City(city), d1, d2).get("Average Temperature"));
             System.out.println("Average Humidity: " + reader.averageMeasurements(new City(city), d1, d2).get("Average Humidity"));
@@ -121,7 +124,7 @@ public class UserDisplay implements UserDisplayInterface {
         } else {
             throw new IllegalArgumentException("wrong input");
         }
-        
+
         System.out.println("\n\nIf you want to go back to the main menu type 1, type 2 to exit.");
         int userInput = input.nextInt();
         if (userInput == 1) {
@@ -136,6 +139,7 @@ public class UserDisplay implements UserDisplayInterface {
 
     @Override
     public void displayCitiesByTemperature() {
+        reader.read();
         System.out.println("\nPlease enter the two dates to get a set of cities\n"
                 + " sorted by their increasing average temperature within the two dates.\n");
         int day1 = input.nextInt();
@@ -170,6 +174,7 @@ public class UserDisplay implements UserDisplayInterface {
 
     @Override
     public void displayAlert() {
+        reader.read();
         System.out.println("\nPlease enter the city and two dates to get the \n"
                 + "number of alerts of each kind with within the two dates of the city");
         System.out.print("\nEnter the name of the city: ");

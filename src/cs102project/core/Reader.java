@@ -4,15 +4,16 @@ import cs102project.interfaces.DataAnalytics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Reader implements DataAnalytics {
-
+public class Reader implements DataAnalytics<City, Date> {
+    Map<String, Double> methodMap;
     private File bigData;
     private Scanner inputFile;
     private ArrayList<City> savedData;
@@ -47,12 +48,12 @@ public class Reader implements DataAnalytics {
 
     @Override
     public HashMap hottestTemperature(Date d1, Date d2) {
+        methodMap = new HashMap<>();
         double riyadh = 0;
         double makkah = 0;
         double madinah = 0;
         double jeddah = 0;
         double abha = 0;
-        HashMap<String, Double> hottest = new HashMap<>();
         for (City city : savedData) {
             if (city.getDate().after(d1) && city.getDate().before(d2)) {
                 if (city.getCityName().equalsIgnoreCase("riyadh")) {
@@ -83,18 +84,18 @@ public class Reader implements DataAnalytics {
         City Madinah = new City("Madinah", new TemperatureSensor(madinah));
         City Jeddah = new City("Jeddah", new TemperatureSensor(jeddah));
         City Abha = new City("Abha", new TemperatureSensor(abha));
-        hottest.put(Riyadh.getCityName(), riyadh);
-        hottest.put(Makkah.getCityName(), makkah);
-        hottest.put(Madinah.getCityName(), madinah);
-        hottest.put(Jeddah.getCityName(), jeddah);
-        hottest.put(Abha.getCityName(), abha);
-        return hottest;
+        methodMap.put(Riyadh.getCityName(), riyadh);
+        methodMap.put(Makkah.getCityName(), makkah);
+        methodMap.put(Madinah.getCityName(), madinah);
+        methodMap.put(Jeddah.getCityName(), jeddah);
+        methodMap.put(Abha.getCityName(), abha);
+        return (HashMap)methodMap;
     }
 
     @Override
     public HashMap averageMeasurements(City city, Date d1, Date d2) {
 
-        HashMap<String, Double> avgMeasurement = new HashMap<>();
+        methodMap = new HashMap<>();
         int i = 0;
         double temperature = 0;
         double humidity = 0;
@@ -102,7 +103,7 @@ public class Reader implements DataAnalytics {
         double distance = 0;
         for (City cityStored : savedData) {
             if (cityStored.getCityName().equalsIgnoreCase(city.getCityName())
-                    && city.getDate().after(d1) && city.getDate().before(d2)) {
+                    && cityStored.getDate().after(d1) && cityStored.getDate().before(d2)) {
                 i++;
                 temperature += cityStored.getTemperatureSensor().getValue();
                 humidity += cityStored.getHumiditySensor().getValue();
@@ -115,26 +116,26 @@ public class Reader implements DataAnalytics {
         pressure /= i;
         distance /= i;
 
-        avgMeasurement.put("Average Temperature", temperature);
-        avgMeasurement.put("Average Humidity", humidity);
-        avgMeasurement.put("Average Pressure", pressure);
-        avgMeasurement.put("Average Distance", distance);
+        methodMap.put("Average Temperature", temperature);
+        methodMap.put("Average Humidity", humidity);
+        methodMap.put("Average Pressure", pressure);
+        methodMap.put("Average Distance", distance);
 
-        return avgMeasurement;
+        return (HashMap)methodMap;
 
     }
 
     @Override
-    public TreeSet citiesByTemperature(Date d1, Date d2) {
-        TreeSet<City> citiesByTemp = new TreeSet<>();
-        int riyadhCount = 0;
-        int makkahCount = 0;
-        int madinaCount = 0;
-        int jeddahCount = 0;
-        int abhaCount = 0;
+    public ArrayList citiesByTemperature(Date d1, Date d2) {
+        ArrayList<City> citiesByTemp = new ArrayList<>();
+        double riyadhCount = 0;
+        double makkahCount = 0;
+        double madinahCount = 0;
+        double jeddahCount = 0;
+        double abhaCount = 0;
         double riyadh = 0;
         double makkah = 0;
-        double madina = 0;
+        double madinah = 0;
         double jeddah = 0;
         double abha = 0;
         for (City city : savedData) {
@@ -145,9 +146,9 @@ public class Reader implements DataAnalytics {
                 } else if (city.getCityName().equalsIgnoreCase("makkah")) {
                     makkah += city.getTemperatureSensor().getValue();
                     makkahCount++;
-                } else if (city.getCityName().equalsIgnoreCase("madina")) {
-                    madina += city.getTemperatureSensor().getValue();
-                    madinaCount++;
+                } else if (city.getCityName().equalsIgnoreCase("madinah")) {
+                    madinah += city.getTemperatureSensor().getValue();
+                    madinahCount++;
                 } else if (city.getCityName().equalsIgnoreCase("jeddah")) {
                     jeddah += city.getTemperatureSensor().getValue();
                     jeddahCount++;
@@ -157,45 +158,53 @@ public class Reader implements DataAnalytics {
                 }
             }
         }
-        citiesByTemp.add(new City("Riyadh", new TemperatureSensor(riyadh / riyadhCount)));
-        citiesByTemp.add(new City("Makkah", new TemperatureSensor(makkah / makkahCount)));
-        citiesByTemp.add(new City("Madina", new TemperatureSensor(madina / madinaCount)));
-        citiesByTemp.add(new City("Jeddah", new TemperatureSensor(jeddah / jeddahCount)));
-        citiesByTemp.add(new City("Abha", new TemperatureSensor(abha / abhaCount)));
+        riyadh /= riyadhCount;
+        makkah /= makkahCount;
+        madinah /= madinahCount;
+        jeddah /= jeddahCount;
+        abha /= abhaCount;
+        
+                
+        citiesByTemp.add(new City("Riyadh", new TemperatureSensor(riyadh)));
+        citiesByTemp.add(new City("Makkah", new TemperatureSensor(makkah)));
+        citiesByTemp.add(new City("Madinah", new TemperatureSensor(madinah)));
+        citiesByTemp.add(new City("Jeddah", new TemperatureSensor(jeddah)));
+        citiesByTemp.add(new City("Abha", new TemperatureSensor(abha)));
+        Collections.sort(citiesByTemp);
         return citiesByTemp;
 
     }
 
     @Override
     public HashMap alert(City city, Date d1, Date d2) {
-        HashMap<String, Integer> cityAlerts = new HashMap<>();
+        methodMap = new HashMap<>();
         int distanceAlert = 0;
         int temperatureAlert = 0;
         int pressureAlert = 0;
         int humidityAlert = 0;
         for (City cityStored : savedData) {
-            if (city.getCityName().equalsIgnoreCase(cityStored.getCityName())) {
-                if (city.getDate().after(d1) && city.getDate().before(d2)) {
-                    if (city.getDistanceSensor().getValue() < 21) {
+            if (cityStored.getCityName().equalsIgnoreCase(city.getCityName())) {
+                if (cityStored.getDate().after(d1) && cityStored.getDate().before(d2)) {
+                    if (cityStored.getDistanceSensor().getValue() < 21) {
                         distanceAlert += 1;
                     }
-                    if (city.getTemperatureSensor().getValue() > 45) {
+                    if (cityStored.getTemperatureSensor().getValue() > 45) {
                         temperatureAlert += 1;
                     }
-                    if (city.getPressureSensor().getValue() > 2050 || city.getPressureSensor().getValue() < 1010) {
+                    if (cityStored.getPressureSensor().getValue() > 2050 || cityStored.getPressureSensor().getValue() < 1010) {
                         pressureAlert += 1;
                     }
-                    if (city.getHumiditySensor().getValue() > 35) {
+                    if (cityStored.getHumiditySensor().getValue() > 35) {
                         humidityAlert += 1;
                     }
                 }
             }
         }
-        cityAlerts.put("Distance Alert", distanceAlert);
-        cityAlerts.put("Temperature Alert", temperatureAlert);
-        cityAlerts.put("Pressure Alert", pressureAlert);
-        cityAlerts.put("Humidity Alert", humidityAlert);
-        return cityAlerts;
+        methodMap.put("Distance Alert", (double)distanceAlert);
+        methodMap.put("Temperature Alert", (double)temperatureAlert);
+        methodMap.put("Pressure Alert", (double)pressureAlert);
+        methodMap.put("Humidity Alert", (double)humidityAlert);
+        return (HashMap)methodMap;
     }
 
 }
